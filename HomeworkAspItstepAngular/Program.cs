@@ -1,10 +1,9 @@
 using HomeworkAspItstepAngular.Data;
+using HomeworkAspItstepAngular.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,21 +23,21 @@ builder.Services.AddSwaggerGen(o =>
     });
 
     o.AddSecurityRequirement(new OpenApiSecurityRequirement
-{
     {
-        new OpenApiSecurityScheme
         {
-            Name = "Bearer",
-            In = ParameterLocation.Header,
-            Reference = new OpenApiReference
+            new OpenApiSecurityScheme
             {
-                Id = "Bearer",
-                Type = ReferenceType.SecurityScheme
-            }
-        },
-        new List<string>()
-    }
-});
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -62,6 +61,8 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
         };
     });
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
