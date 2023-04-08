@@ -1,12 +1,13 @@
 ﻿using HomeworkAspItstepAngular.Data;
 using HomeworkAspItstepAngular.Entities;
+using HomeworkAspItstepAngular.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeworkAspItstepAngular.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class NotepadController : ControllerBase
@@ -24,14 +25,19 @@ namespace HomeworkAspItstepAngular.Controllers
             return _appDb.Notepads
                 .AsNoTracking()
                 .Where(x => x.ApplicationUserId == GetUserId())
+                .Include(x => x.Notes)
                 .ToArray();
         }
 
         [HttpPost]
-        public Notepad Add([FromBody] Notepad notepad)
+        public Notepad Add([FromBody] NotepadCreateDto notepadDto)
         {
-            notepad.ApplicationUserId = GetUserId();
-            notepad.NotepadId = Guid.NewGuid();
+            var notepad = new Notepad
+            {
+                NotepadName = notepadDto.NotepadName,
+                ApplicationUserId = GetUserId(),
+                NotepadId = Guid.NewGuid()
+            };
 
             var entity = _appDb.Notepads.Add(notepad);
             _appDb.SaveChanges();
@@ -40,11 +46,11 @@ namespace HomeworkAspItstepAngular.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Notepad notepad)
+        public IActionResult Update([FromBody] NotepadUpdateDto dto)
         {
             var dbNotepad = _appDb.Notepads
                 .Where(x => x.ApplicationUserId == GetUserId())
-                .Where(x => x.NotepadId == notepad.NotepadId)
+                .Where(x => x.NotepadId == dto.NotepadId)
                 .FirstOrDefault();
 
             if (dbNotepad == null)
@@ -52,7 +58,7 @@ namespace HomeworkAspItstepAngular.Controllers
                 return BadRequest();
             }
 
-            dbNotepad.NotepadName = notepad.NotepadName;
+            dbNotepad.NotepadName = dto.NotepadName;
             _appDb.SaveChanges();
 
             return Ok(dbNotepad);

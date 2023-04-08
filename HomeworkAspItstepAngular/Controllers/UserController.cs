@@ -64,6 +64,7 @@ namespace HomeworkAspItstepAngular.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, request.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                new Claim("ApplicationUserId", user.ApplicationUserId.ToString()),
             };
 
             var token = new JwtSecurityToken(

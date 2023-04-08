@@ -19,11 +19,11 @@ namespace HomeworkAspItstepAngular.Controllers
         }
 
         [HttpGet]
-        public Note[] GetAll(string id)
+        public Note[] GetAll([FromQuery] Guid notepadId)
         {
             return _appDb.Notes
                 .AsNoTracking()
-                .Where(x => x.NotepadId.ToString() == id)
+                .Where(x => x.NotepadId == notepadId)
                 .ToArray();
         }
 
