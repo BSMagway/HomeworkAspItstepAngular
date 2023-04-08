@@ -63,6 +63,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddManagedSingleton<IDbService>(null);
 
 var app = builder.Build();
 
