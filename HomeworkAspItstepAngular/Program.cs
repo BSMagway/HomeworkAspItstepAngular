@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INotepadService, NotepadService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddManagedSingleton<IDbService>(null);
 
 var app = builder.Build();

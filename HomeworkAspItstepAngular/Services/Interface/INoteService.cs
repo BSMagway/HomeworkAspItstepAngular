@@ -7,13 +7,13 @@ namespace HomeworkAspItstepAngular.Services.Interface
     public interface INoteService
     {
 
-        public Note[] GetAll(Guid userId);
+        public Note[] GetAll(Guid notepadId);
 
-        public Note Add(NotepadCreateDto notepadDto, Guid userId);
+        public Note Add(Note note);
 
-        public bool Update(NotepadUpdateDto dto, Guid userId);
+        public bool Update(Note note);
 
-        public bool Remove(Guid notepadId, Guid userId);
+        public bool Remove(Guid noteId);
 
     }
 }

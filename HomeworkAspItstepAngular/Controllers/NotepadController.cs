@@ -21,16 +21,10 @@ namespace HomeworkAspItstepAngular.Controllers
         }
 
         [HttpGet]
-        public Notepad[] GetAll()
-        {
-            return _notepadService.GetAll(GetUserId());
-        }
+        public Notepad[] GetAll() => _notepadService.GetAll(GetUserId());
 
         [HttpPost]
-        public Notepad Add([FromBody] NotepadCreateDto notepadDto)
-        {
-            return _notepadService.Add(notepadDto, GetUserId());
-        }
+        public Notepad Add([FromBody] NotepadCreateDto notepadDto) => _notepadService.Add(notepadDto, GetUserId());
 
         [HttpPut]
         public IActionResult Update([FromBody] NotepadUpdateDto dto)

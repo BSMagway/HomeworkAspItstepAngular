@@ -1,5 +1,7 @@
 ﻿using HomeworkAspItstepAngular.Data;
 using HomeworkAspItstepAngular.Entities;
+using HomeworkAspItstepAngular.Services;
+using HomeworkAspItstepAngular.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,68 +13,39 @@ namespace HomeworkAspItstepAngular.Controllers
     [Route("api/[controller]")]
     public class NoteController : ControllerBase
     {
-        private readonly AppDbContext _appDb;
+        private readonly NoteService _noteService;
 
-        public NoteController(AppDbContext appDb)
+        public NoteController(NoteService noteService)
         {
-            _appDb = appDb;
+            _noteService = noteService;
         }
 
         [HttpGet]
-        public Note[] GetAll([FromQuery] Guid notepadId)
-        {
-            return _appDb.Notes
-                .AsNoTracking()
-                .Where(x => x.NotepadId == notepadId)
-                .ToArray();
-        }
+        public Note[] GetAll([FromQuery] Guid notepadId) => _noteService.GetAll(notepadId);
 
         [HttpPost]
-        public Note Add([FromBody] Note note)
-        {
-            note.NoteId = Guid.NewGuid();
-
-            var entity = _appDb.Notes.Add(note);
-            _appDb.SaveChanges();
-
-            return entity.Entity;
-        }
+        public Note Add([FromBody] Note note) => _noteService.Add(note);
 
         [HttpPut]
         public IActionResult Update([FromBody] Note note)
         {
-            var dbNote = _appDb.Notes
-                .Where(x => x.NoteId == note.NoteId)
-                .FirstOrDefault();
-
-            if (dbNote == null)
+            if (_noteService.Update(note))
             {
-                return BadRequest();
+                return Ok();
             }
 
-            dbNote.NoteName = note.NoteName;
-            dbNote.NoteContent = note.NoteContent;
-            _appDb.SaveChanges();
-
-            return Ok(dbNote);
+            return BadRequest();
         }
 
         [HttpDelete]
         public IActionResult Remove([FromQuery] Guid noteId)
         {
-            var note = _appDb.Notes
-                .Where(x => x.NoteId == noteId)
-                .FirstOrDefault();
-
-            if (note == null)
+            if (_noteService.Remove(noteId))
             {
-                return BadRequest();
+                return Ok();
             }
 
-            _appDb.Notes.Remove(note);
-            _appDb.SaveChanges();
-
-            return Ok(note);
+            return BadRequest();
         }
     }
 }
