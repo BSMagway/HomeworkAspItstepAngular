@@ -1,4 +1,4 @@
-﻿namespace HomeworkAspItstepAngular.Services
+﻿namespace HomeworkAspItstepAngular.Services.Interface
 {
     public interface IDbService
     {

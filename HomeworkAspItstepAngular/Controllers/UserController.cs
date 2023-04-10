@@ -1,5 +1,5 @@
 ﻿using HomeworkAspItstepAngular.Models;
-using HomeworkAspItstepAngular.Services;
+using HomeworkAspItstepAngular.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeworkAspItstepAngular.Controllers

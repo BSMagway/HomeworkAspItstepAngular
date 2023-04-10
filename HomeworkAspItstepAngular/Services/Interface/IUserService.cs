@@ -1,6 +1,6 @@
 ﻿using HomeworkAspItstepAngular.Models;
 
-namespace HomeworkAspItstepAngular.Services
+namespace HomeworkAspItstepAngular.Services.Interface
 {
     public interface IUserService
     {

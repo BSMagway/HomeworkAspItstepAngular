@@ -1,4 +1,6 @@
-﻿namespace HomeworkAspItstepAngular.Services
+﻿using HomeworkAspItstepAngular.Services.Interface;
+
+namespace HomeworkAspItstepAngular.Services
 {
     public static class ServicesExtension
     {

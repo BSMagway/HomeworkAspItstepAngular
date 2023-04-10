@@ -1,4 +1,5 @@
 using HomeworkAspItstepAngular.Data;
+using HomeworkAspItstepAngular.Services.Interface;
 using HomeworkAspItstepAngular.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INotepadService, NotepadService>();
 builder.Services.AddManagedSingleton<IDbService>(null);
 
 var app = builder.Build();

@@ -1,6 +1,7 @@
 ﻿using HomeworkAspItstepAngular.Data;
 using HomeworkAspItstepAngular.Entities;
 using HomeworkAspItstepAngular.Models;
+using HomeworkAspItstepAngular.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,75 +13,46 @@ namespace HomeworkAspItstepAngular.Controllers
     [Route("api/[controller]")]
     public class NotepadController : ControllerBase
     {
-        private readonly AppDbContext _appDb;
+        private readonly INotepadService _notepadService;
 
-        public NotepadController(AppDbContext appDb)
+        public NotepadController(INotepadService notepadService)
         {
-            _appDb = appDb;
+            _notepadService = notepadService;
         }
 
         [HttpGet]
         public Notepad[] GetAll()
         {
-            return _appDb.Notepads
-                .AsNoTracking()
-                .Where(x => x.ApplicationUserId == GetUserId())
-                .Include(x => x.Notes)
-                .ToArray();
+            return _notepadService.GetAll(GetUserId());
         }
 
         [HttpPost]
         public Notepad Add([FromBody] NotepadCreateDto notepadDto)
         {
-            var notepad = new Notepad
-            {
-                NotepadName = notepadDto.NotepadName,
-                ApplicationUserId = GetUserId(),
-                NotepadId = Guid.NewGuid()
-            };
-
-            var entity = _appDb.Notepads.Add(notepad);
-            _appDb.SaveChanges();
-
-            return entity.Entity;
+            return _notepadService.Add(notepadDto, GetUserId());
         }
 
         [HttpPut]
         public IActionResult Update([FromBody] NotepadUpdateDto dto)
         {
-            var dbNotepad = _appDb.Notepads
-                .Where(x => x.ApplicationUserId == GetUserId())
-                .Where(x => x.NotepadId == dto.NotepadId)
-                .FirstOrDefault();
 
-            if (dbNotepad == null)
+            if (_notepadService.Update(dto, GetUserId()))
             {
-                return BadRequest();
+                return Ok();
             }
 
-            dbNotepad.NotepadName = dto.NotepadName;
-            _appDb.SaveChanges();
-
-            return Ok(dbNotepad);
+            return BadRequest();
         }
 
         [HttpDelete]
         public IActionResult Remove([FromQuery] Guid notepadId)
         {
-            var notepad = _appDb.Notepads
-                .Where(x => x.ApplicationUserId == GetUserId())
-                .Where(x => x.NotepadId == notepadId)
-                .FirstOrDefault();
-
-            if (notepad == null)
+            if (_notepadService.Remove(notepadId, GetUserId()))
             {
-                return BadRequest();
+                return Ok();
             }
 
-            _appDb.Notepads.Remove(notepad);
-            _appDb.SaveChanges();
-
-            return Ok(notepad);
+            return BadRequest();
         }
 
         private Guid GetUserId()
